@@ -1,0 +1,8 @@
+.DS_store
+.vscode/*
+*.o
+.idea/
+cmake-build-debug/
+.obj/
+libft/.obj/
+filler.trace
