@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   fl_filler.h                                        :+:      :+:    :+:   */
+/*   fl_parser.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fsmith <fsmith@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,33 +10,20 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FILLER_FILLER_H
-#define FILLER_FILLER_H
+#include	"filler.h"
 
-# include "libft.h"
-# include "stdio.h"
-
-# define MY_FILLER  "fsmith.filler"
-
-typedef	struct	s_filler
+int			fl_player_parser(t_filler *filler)
 {
-    int			x;
-    int			y;
-    int			**map;
-    int			x_size;
-    int			y_size;
-    char		player;
-    char		dot_small;
-    char		dot_big;
-    char		enemy_dot_small;
-    char		enemy_dot_big;
-    int			real_piece_x_size;
-    int			real_piece_y_size;
-    int			piece_x_size;
-    int			piece_y_size;
-    int			**piece;
-}				t_filler;
+	char	*str;
+	int		len;
 
-int fl_player_parser(t_filler *filler);
-
-#endif //FILLER_FILLER_H
+	str = NULL;
+	get_next_line(0, &str);
+	len = ft_strlen(str);
+	if (ft_strncmp(str, "$$$ exec p", 10) || len < 16 + ft_strlen(MY_FILLER))
+		return (0);
+	if (!ft_strncmp(str + len - ft_strlen(MY_FILLER) - 1, MY_FILLER,
+			ft_strlen(MY_FILLER)))
+		filler->player = str[10];
+	return (0);
+}
