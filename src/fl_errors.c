@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   fl_parser.c                                        :+:      :+:    :+:   */
+/*   fl_errors.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fsmith <fsmith@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,32 +12,19 @@
 
 #include	"filler.h"
 
-void fl_player_parser(t_filler *filler)
+void 	fl_player_errors_handler(t_filler *filler)
 {
-	char	*str;
-	int		len;
+	if (ft_strcmp(&filler->player, "1") && ft_strcmp(&filler->player, "2"))
+	{
+		ft_putendl_fd("Parser error: wrong player!", 2);
+		exit(PLAYER_ERROR);
+	}
+}
 
-	str = NULL;
-	get_next_line(0, &str);
-	len = ft_strlen(str);
-	if (ft_strncmp(str, "$$$ exec p", 10) || len < 16 + ft_strlen(MY_FILLER))
-		fl_player_errors_handler(filler);
-	if (!ft_strncmp(str + len - ft_strlen(MY_FILLER) - 1, MY_FILLER,
-			ft_strlen(MY_FILLER)))
-		filler->player = str[10];
-	fl_player_errors_handler(filler);
-	if (!ft_strcmp(&filler->player, "1"))
-	{
-		filler->dot_big = 'O';
-		filler->dot_small = 'o';
-		filler->enemy_dot_small = 'x';
-		filler->enemy_dot_big = 'X';
-	}
-	else if (!ft_strcmp(&filler->player, "2"))
-	{
-		filler->dot_big = 'X';
-		filler->dot_small = 'x';
-		filler->enemy_dot_small = 'o';
-		filler->enemy_dot_big = 'O';
-	}
+void	fl_util_malloc_error(char *str)
+{
+	ft_putendl("Malloc error: ");
+	ft_putstr(str);
+	ft_putendl(" not allocated!");
+	exit(MALLOC_ERROR);
 }

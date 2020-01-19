@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   fl_parser.c                                        :+:      :+:    :+:   */
+/*   fl_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fsmith <fsmith@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,32 +12,15 @@
 
 #include	"filler.h"
 
-void fl_player_parser(t_filler *filler)
+void		util_release_char_matrix(char **mtrx)
 {
-	char	*str;
-	int		len;
+	int		i;
 
-	str = NULL;
-	get_next_line(0, &str);
-	len = ft_strlen(str);
-	if (ft_strncmp(str, "$$$ exec p", 10) || len < 16 + ft_strlen(MY_FILLER))
-		fl_player_errors_handler(filler);
-	if (!ft_strncmp(str + len - ft_strlen(MY_FILLER) - 1, MY_FILLER,
-			ft_strlen(MY_FILLER)))
-		filler->player = str[10];
-	fl_player_errors_handler(filler);
-	if (!ft_strcmp(&filler->player, "1"))
+	i = 0;
+	while (mtrx[i] != NULL)
 	{
-		filler->dot_big = 'O';
-		filler->dot_small = 'o';
-		filler->enemy_dot_small = 'x';
-		filler->enemy_dot_big = 'X';
+		free(mtrx[i]);
+		i++;
 	}
-	else if (!ft_strcmp(&filler->player, "2"))
-	{
-		filler->dot_big = 'X';
-		filler->dot_small = 'x';
-		filler->enemy_dot_small = 'o';
-		filler->enemy_dot_big = 'O';
-	}
+	free(mtrx);
 }

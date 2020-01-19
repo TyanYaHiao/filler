@@ -109,4 +109,6 @@ void				ft_switch_bool(int *value);
 char				*ft_dtoa(double n, size_t precision);
 double				ft_diff_double(double x0, double x1);
 
+char				**ft_strsplitwhitespaces(char const *s);
+
 #endif

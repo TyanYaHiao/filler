@@ -42,7 +42,8 @@ FILES :=	ft_abs ft_abs_double ft_atoi_base ft_atoi_hex ft_atoi ft_bzero\
 			ft_strncmp ft_strncpy ft_strnequ ft_strnew ft_strnstr\
 			ft_strrchr ft_strrejoin ft_strrev ft_strsplit ft_strstr\
 			ft_strsub ft_strtrim ft_tolower ft_toupper ft_utoa_h\
-			ft_utoa_hh ft_utoa_l ft_utoa_ll ft_utoa get_next_line
+			ft_utoa_hh ft_utoa_l ft_utoa_ll ft_utoa get_next_line\
+			ft_strsplitwhitespaces
 
 HDRS =		$(addprefix $(INC_PATH), $(addsuffix .h, $(HFILES)))
 SRCS =		$(addprefix $(SRC_PATH), $(addsuffix .c, $(FILES)))

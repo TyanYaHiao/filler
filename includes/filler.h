@@ -14,15 +14,16 @@
 #define FILLER_FILLER_H
 
 # include "libft.h"
-# include "stdio.h"
 
-# define MY_FILLER  "fsmith.filler"
+# define PLAYER_ERROR   1
+# define MALLOC_ERROR	2
+# define MY_FILLER      "fsmith.filler"
 
 typedef	struct	s_filler
 {
     int			x;
     int			y;
-    int			**map;
+    int			*map;
     int			x_size;
     int			y_size;
     char		player;
@@ -37,6 +38,13 @@ typedef	struct	s_filler
     int			**piece;
 }				t_filler;
 
-int fl_player_parser(t_filler *filler);
+void fl_player_parser(t_filler *filler);
+void fl_game_loop(t_filler *filler);
+int fl_find_size(t_filler *filler);
+
+void 	fl_player_errors_handler(t_filler *filler);
+void	fl_util_malloc_error(char *str);
+
+void	util_release_char_matrix(char **mtrx);
 
 #endif //FILLER_FILLER_H
