@@ -4,5 +4,5 @@
 .idea/
 cmake-build-debug/
 .obj/
-libft/.obj/
+lib/libft/.obj/
 filler.trace
