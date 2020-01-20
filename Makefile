@@ -63,4 +63,4 @@ norm:
 .PHONY: $(LIB) all clean fclean re mclean mfclean mre norm
 
 try:
-	./filler_vm -p1 cmake-build-debug/fsmith.filler -p2 players/abanlin.filler -v -f maps/map000
+	./filler_vm -p1 cmake-build-debug/fsmith.filler -p2 players/abanlin.filler -v -f maps/map00

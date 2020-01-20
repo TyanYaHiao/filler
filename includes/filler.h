@@ -17,6 +17,9 @@
 
 # define PLAYER_ERROR   1
 # define MALLOC_ERROR	2
+# define ENEMY			0
+# define PLAYER			-1
+# define EMPTY			1
 # define MY_FILLER      "fsmith.filler"
 
 typedef	struct	s_filler
@@ -35,12 +38,16 @@ typedef	struct	s_filler
     int			real_piece_y_size;
     int			piece_x_size;
     int			piece_y_size;
-    int			**piece;
+    int			*piece;
 }				t_filler;
 
 void fl_player_parser(t_filler *filler);
 void fl_game_loop(t_filler *filler);
 int fl_find_size(t_filler *filler);
+void fl_parse_map(t_filler *filler);
+void fl_zero_map(t_filler *filler);
+int fl_parse_piece_size(t_filler *filler);
+void fl_parse_piece(t_filler *filler);
 
 void 	fl_player_errors_handler(t_filler *filler);
 void	fl_util_malloc_error(char *str);
