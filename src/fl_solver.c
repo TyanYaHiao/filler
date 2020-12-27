@@ -12,80 +12,80 @@
 
 #include "fl_filler.h"
 
-int			check_solve(t_filler *filler)
+int			check_solve(t_filler *fl)
 {
 	int		x;
 	int		y;
-	int		ab[2];
+	int		player_counter;
+	int		enemy_counter;
 
+	player_counter = 0;
+	enemy_counter = 0;
 	x = 0;
-	y = 0;
-	ab[0] = 0;
-	ab[1] = 0;
-	while (x < filler->map_s_x)
+	while (x < fl->map_size_x)
 	{
 		y = 0;
-		while (y < filler->map_s_y)
+		while (y < fl->map_size_y)
 		{
-			if (filler->map[x][y] == 'A')
-				ab[0]++;
-			if (filler->map[x][y] == 'B')
-				ab[1]++;
+			if (fl->map[x][y] == PLAYER)
+				player_counter++;
+			if (fl->map[x][y] == ENEMY)
+				enemy_counter++;
 			y++;
 		}
 		x++;
 	}
-	if (ab[0] == 1 && ab[1] == 0)
-		return (1);
+	if (player_counter == 1 && enemy_counter == 0)
+		return (TRUE);
 	else
-		return (0);
+		return (FALSE);
 }
 
-void		place_piece(t_filler *filler, int map_x, int map_y)
+void		place_token(t_filler *fl, int map_x, int map_y)
 {
 	int		x;
 	int		y;
 
 	x = 0;
-	while (x < filler->trim_s_x)
+	while (x < fl->token_trim_size_x)
 	{
 		y = 0;
-		while (y < filler->trim_s_y)
+		while (y < fl->token_trim_size_y)
 		{
-			if (filler->piece_trimmed[x][y] == '*' &&\
-			filler->map[map_x + x][map_y + y] == '.')
-				filler->map[map_x + x][map_y + y] = '*';
-			else if (filler->piece_trimmed[x][y] == '*' &&\
-			(filler->map[map_x + x][map_y + y] == filler->player ||\
-			filler->map[map_x + x][map_y + y] == filler->player - 32))
-				filler->map[map_x + x][map_y + y] = 'A';
-			else if (filler->piece_trimmed[x][y] == '*' &&\
-			(filler->map[map_x + x][map_y + y] == filler->enemy ||\
-			filler->map[map_x + x][map_y + y] == filler->enemy - 32))
-				filler->map[map_x + x][map_y + y] = 'B';
+			if (fl->token_trimmed[x][y] == TOKEN
+			&& fl->map[map_x + x][map_y + y] == EMPTY)
+				fl->map[map_x + x][map_y + y] = TOKEN;
+			else if (fl->token_trimmed[x][y] == TOKEN
+			&& (fl->map[map_x + x][map_y + y] == fl->player_sign_small
+			|| fl->map[map_x + x][map_y + y] == fl->player_sign_big))
+				fl->map[map_x + x][map_y + y] = PLAYER;
+			else if (fl->token_trimmed[x][y] == TOKEN && \
+			(fl->map[map_x + x][map_y + y] == fl->enemy_sign_small ||
+			fl->map[map_x + x][map_y + y] == fl->enemy_sign_big))
+				fl->map[map_x + x][map_y + y] = ENEMY;
 			y++;
 		}
 		x++;
 	}
 }
 
-void		locate_enemy(t_filler *filler)
+void		locate_enemy(t_filler *fl)
 {
 	int		x;
 	int		y;
 
 	x = 0;
-	while (x < filler->map_s_x)
+	while (x < fl->map_size_x)
 	{
 		y = 0;
-		while (y < filler->map_s_y)
+		while (y < fl->map_size_y)
 		{
-			if (filler->map[x][y] == filler->enemy ||\
-				filler->map[x][y] == filler->enemy - 32)
+			if (fl->map[x][y] == fl->enemy_sign_small || \
+				fl->map[x][y] == fl->enemy_sign_big)
 			{
-				filler->enemy_x = x;
-				filler->enemy_y = y;
-				is_best_distance(filler);
+				fl->enemy_x = x;
+				fl->enemy_y = y;
+				find_best_distance(fl);
 			}
 			y++;
 		}
@@ -93,29 +93,30 @@ void		locate_enemy(t_filler *filler)
 	}
 }
 
-void		solve_filler(t_filler *filler)
+void		solve_filler(t_filler *fl)
 {
 	int		x;
 	int		y;
 
 	x = 0;
-	filler->best_x = 1;
-	filler->best_y = 1;
-	while (x < filler->map_s_x)
+	fl->best_x = 1;
+	fl->best_y = 1;
+	fl->best_solve_distance = 0;
+	while (x < fl->map_size_x)
 	{
 		y = 0;
-		while (y < filler->map_s_y)
+		while (y < fl->map_size_y)
 		{
-			if (x + filler->trim_s_x <= filler->map_s_x &&\
-				y + filler->trim_s_y <= filler->map_s_y)
-				place_piece(filler, x, y);
-			if (check_solve(filler))
+			if (x + fl->token_trim_size_x <= fl->map_size_x && \
+				y + fl->token_trim_size_y <= fl->map_size_y)
+				place_token(fl, x, y);
+			if (check_solve(fl))
 			{
-				filler->solve_x = x;
-				filler->solve_y = y;
-				locate_enemy(filler);
+				fl->solve_x = x;
+				fl->solve_y = y;
+				locate_enemy(fl);
 			}
-			clear_map(filler);
+			clear_map(fl);
 			y++;
 		}
 		x++;

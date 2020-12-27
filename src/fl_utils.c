@@ -12,95 +12,85 @@
 
 #include    "fl_filler.h"
 
-void	ft_delmap(char **map)
+void	free_maps(t_filler *fl)
 {
-	int				y;
-
-	y = 0;
-	while (map[y])
-	{
-		free(map[y]);
-		y++;
-	}
-	free(map);
+	ft_clear_2d_array(fl->map);
+	ft_clear_2d_array(fl->token);
+	ft_clear_2d_array(fl->token_trimmed);
 }
 
-int		ft_nsize(int i)
-{
-	int				len;
-
-	len = 1;
-	while (i /= 10)
-		len++;
-	return (len);
-}
-
-void	measure_piece(t_filler *filler)
+void	measure_token(t_filler *fl)
 {
 	int				x;
 	int				y;
 
+	fl->token_start_x = -1;
+	fl->token_start_y = fl->token_size_y;
+	fl->token_end_y = -1;
 	x = 0;
-	filler->start_x = -1;
-	filler->start_y = filler->piece_s_y;
-	filler->end_y = -1;
-	while (x < filler->piece_s_x)
+	while (x < fl->token_size_x)
 	{
 		y = 0;
-		while (y < filler->piece_s_y)
+		while (y < fl->token_size_y)
 		{
-			if (filler->piece[x][y] != '.' && filler->start_x == -1)
-				filler->start_x = x;
-			if (filler->piece[x][y] != '.' && y < filler->start_y)
-				filler->start_y = y;
-			if (filler->piece[x][y] != '.')
-				filler->end_x = x;
-			if (filler->piece[x][y] != '.' && y > filler->end_y)
-				filler->end_y = y;
+			if (fl->token[x][y] != EMPTY && fl->token_start_x == -1)
+				fl->token_start_x = x;
+			if (fl->token[x][y] != EMPTY && y < fl->token_start_y)
+				fl->token_start_y = y;
+			if (fl->token[x][y] != EMPTY)
+				fl->token_end_x = x;
+			if (fl->token[x][y] != EMPTY && y > fl->token_end_y)
+				fl->token_end_y = y;
 			y++;
 		}
 		x++;
 	}
 }
 
-void	clear_map(t_filler *filler)
+void	clear_map(t_filler *fl)
 {
 	int				x;
 	int				y;
 
 	x = 0;
-	y = 0;
-	while (x < filler->map_s_x)
+	while (x < fl->map_size_x)
 	{
 		y = 0;
-		while (y < filler->map_s_y)
+		while (y < fl->map_size_y)
 		{
-			if (filler->map[x][y] == 'A')
-				filler->map[x][y] = filler->player;
-			if (filler->map[x][y] == 'B')
-				filler->map[x][y] = filler->enemy;
-			if (filler->map[x][y] == '*')
-				filler->map[x][y] = '.';
+			if (fl->map[x][y] == PLAYER)
+				fl->map[x][y] = fl->player_sign_small;
+			if (fl->map[x][y] == ENEMY)
+				fl->map[x][y] = fl->enemy_sign_small;
+			if (fl->map[x][y] == TOKEN)
+				fl->map[x][y] = EMPTY;
 			y++;
 		}
 		x++;
 	}
 }
 
-void	is_best_distance(t_filler *filler)
+void	find_best_distance(t_filler *fl)
 {
 	int				x;
 	int				y;
 	unsigned int	distance;
 
-	x = filler->enemy_x - filler->solve_x - filler->trim_s_x / 2;
-	y = filler->enemy_y - filler->solve_y - filler->trim_s_y / 2;
+	x = fl->enemy_x - fl->solve_x - fl->token_trim_size_x / 2;
+	y = fl->enemy_y - fl->solve_y - fl->token_trim_size_y / 2;
 	distance = ((x * x) + (y * y));
-	if (distance < filler->best_solve_distance ||\
-		filler->best_solve_distance == 0)
+	if (distance < fl->best_solve_distance || fl->best_solve_distance == 0)
 	{
-		filler->best_x = filler->solve_x;
-		filler->best_y = filler->solve_y;
-		filler->best_solve_distance = distance;
+		fl->best_x = fl->solve_x;
+		fl->best_y = fl->solve_y;
+		fl->best_solve_distance = distance;
 	}
+}
+
+void	make_move(t_filler *fl)
+{
+	ft_putnbr(fl->best_x - fl->token_start_x);
+	ft_putchar(' ');
+	ft_putnbr(fl->best_y - fl->token_start_y);
+	ft_putchar('\n');
 }

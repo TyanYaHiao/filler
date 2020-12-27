@@ -12,115 +12,77 @@
 
 #include "fl_filler.h"
 
-void	fill_map(t_filler *filler)
-{
-	int		x;
-	int		offset;
-	char	*line;
-
-	x = 0;
-	get_next_line(0, &line);
-	free(line);
-	while (x < filler->map_s_x)
-	{
-		offset = 4;
-		get_next_line(0, &line);
-		while (offset < filler->map_s_y + 4)
-		{
-			if (line[offset] != '.')
-				filler->map[x][offset - 4] = line[offset];
-			offset++;
-		}
-		free(line);
-		x++;
-	}
-}
-
-void	make_map(t_filler *filler, char *line)
-{
-	int		x;
-
-	x = 0;
-	filler->map_s_x = ft_atoi(&line[8]);
-	filler->map_s_y = ft_atoi(&line[8 + ft_nsize(filler->map_s_x)]);
-	filler->map = malloc(sizeof(char *) * filler->map_s_x + 1);
-	filler->map[filler->map_s_x] = NULL;
-	while (x < filler->map_s_x)
-	{
-		filler->map[x] = malloc(sizeof(char) * filler->map_s_y + 1);
-		filler->map[x][filler->map_s_y] = '\0';
-		ft_memset(filler->map[x], '.', filler->map_s_y);
-		x++;
-	}
-	fill_map(filler);
-}
-
-void	fill_piece(t_filler *filler)
-{
-	int		x;
-	int		offset;
-	char	*line;
-
-	x = 0;
-	while (x < filler->piece_s_x)
-	{
-		offset = 0;
-		get_next_line(0, &line);
-		while (offset < filler->piece_s_y)
-		{
-			if (line[offset] == '*')
-				filler->piece[x][offset] = '*';
-			offset++;
-		}
-		free(line);
-		x++;
-	}
-}
-
-void	make_piece(t_filler *filler)
-{
-	int		x;
-	char	*line;
-
-	x = 0;
-	get_next_line(0, &line);
-	filler->piece_s_x = ft_atoi(&line[6]);
-	filler->piece_s_y = ft_atoi(&line[6 + ft_nsize(filler->piece_s_x)]);
-	filler->piece = malloc(sizeof(char *) * filler->piece_s_x + 1);
-	filler->piece[filler->piece_s_x] = NULL;
-	while (x < filler->piece_s_x)
-	{
-		filler->piece[x] = malloc(sizeof(char) * filler->piece_s_y + 1);
-		filler->piece[x][filler->piece_s_y] = '\0';
-		ft_memset(filler->piece[x], '.', filler->piece_s_y);
-		x++;
-	}
-	free(line);
-	fill_piece(filler);
-}
-
-void	trim_piece(t_filler *filler)
+void	fill_map(t_filler *fl)
 {
 	int		x;
 	int		y;
+	char	*line;
 
-	measure_piece(filler);
+	get_next_line(0, &line);
+	free(line);
 	x = 0;
-	filler->trim_s_x = (filler->end_x - filler->start_x) + 1;
-	filler->trim_s_y = (filler->end_y - filler->start_y) + 1;
-	filler->piece_trimmed = malloc(sizeof(char *) * filler->trim_s_x + 1);
-	filler->piece_trimmed[filler->trim_s_x] = NULL;
-	while (x < filler->trim_s_x)
+	while (x < fl->map_size_x)
 	{
 		y = 0;
-		filler->piece_trimmed[x] = malloc(sizeof(char) * filler->trim_s_y + 1);
-		filler->piece_trimmed[x][filler->trim_s_y] = '\0';
-		while (y < filler->trim_s_y)
+		get_next_line(0, &line);
+		while (y < fl->map_size_y)
 		{
-			filler->piece_trimmed[x][y] =\
-			filler->piece[x + filler->start_x][y + filler->start_y];
+			if (line[y + SHIFT] != '.')
+				fl->map[x][y] = line[y + SHIFT];
 			y++;
 		}
+		free(line);
 		x++;
 	}
+}
+
+void	parse_map(t_filler *fl, char *line)
+{
+	free(line);
+	fl->map_size_x = ft_atoi(&line[8]);
+	fl->map_size_y = ft_atoi(&line[8 + ft_nbrlen(fl->map_size_x)]);
+	init_map(fl);
+	fill_map(fl);
+}
+
+void	fill_token(t_filler *fl)
+{
+	int		x;
+	int		y;
+	char	*line;
+
+	x = 0;
+	while (x < fl->token_size_x)
+	{
+		y = 0;
+		get_next_line(0, &line);
+		while (y < fl->token_size_y)
+		{
+			if (line[y] == '*')
+				fl->token[x][y] = '*';
+			y++;
+		}
+		free(line);
+		x++;
+	}
+}
+
+void	parce_token(t_filler *fl)
+{
+	char	*line;
+
+	get_next_line(0, &line);
+	fl->token_size_x = ft_atoi(&line[6]);
+	fl->token_size_y = ft_atoi(&line[6 + ft_nbrlen(fl->token_size_x)]);
+	free(line);
+	init_token(fl);
+	fill_token(fl);
+}
+
+void	trim_token(t_filler *fl)
+{
+	measure_token(fl);
+	fl->token_trim_size_x = (fl->token_end_x - fl->token_start_x) + 1;
+	fl->token_trim_size_y = (fl->token_end_y - fl->token_start_y) + 1;
+	init_trim_token(fl);
 }

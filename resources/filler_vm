@@ -279,7 +279,7 @@ class Player
 			puts "launched #{self.file_name}"
 		rescue
 			puts "error:"
-			puts "bad player"
+			puts "bad player_sign_small"
 			exit (-3)
 		end
 	end
@@ -364,13 +364,13 @@ class Trace
 end
 
 class	Vm_filler
-	attr_accessor :map, :player, :challenger, :interactif, :sid, :verbose, :time, :modif_time
+	attr_accessor :map, :player_sign_small, :challenger, :interactif, :sid, :verbose, :time, :modif_time
 
 	def	initialize(argv = nil)
 		self.time = 10
 		self.modif_time = 0
 		self.map = nil
-		self.player = nil
+		self.player_sign_small = nil
 		self.challenger = nil
 		self.interactif = 0
 		self.verbose = 1
@@ -379,7 +379,7 @@ class	Vm_filler
 			self.map = av
 		end
 		user = Proc.new do |av|
-			self.player = av
+			self.player_sign_small = av
 		end
 		versus = Proc.new do |av|
 			self.challenger = av
@@ -426,8 +426,8 @@ class	Vm_filler
 		puts "   -t  --time		set timeout in second"
 		puts "   -q  --quiet		quiet mode"
 		puts "   -i  --interactive	interactive mode(default)"
-		puts "   -p1 --player1	use filler binary as a first player"
-		puts "   -p2 --player2	use filler binary as a second player"
+		puts "   -p1 --player1	use filler binary as a first player_sign_small"
+		puts "   -p2 --player2	use filler binary as a second player_sign_small"
 		puts "   -f  --file		use a map file (required)"
 		puts "   -s  --seed		use the seed number (initialization random) (man srand)"
 	end
@@ -443,8 +443,8 @@ end
 
 def all_lose(players, trace)
 	i = 0
-	for player in players
-		i += player.live
+	for player_sign_small in players
+		i += player_sign_small.live
 	end
 	return i > 0
 end
@@ -464,7 +464,7 @@ if __FILE__ == $0
 			init.help
 			exit 42
 		end
-		if init.player == nil
+		if init.player_sign_small == nil
 			init.interactif = 1
 		end
 		if init.interactif == 1 && init.modif_time == 0
@@ -477,13 +477,13 @@ if __FILE__ == $0
 		map.small_map
 
 		players = []
-		if init.player != nil
-			players << Player.new(init.player, 'O')
+		if init.player_sign_small != nil
+			players << Player.new(init.player_sign_small, 'O')
 		end
 		if init.challenger != nil
 			players << Player.new(init.challenger, 'X')
 		end
-		if init.interactif == 1 && init.player != nil
+		if init.interactif == 1 && init.player_sign_small != nil
 			puts "#{$0}: Wrong given arguments"
 			init.help
 			exit 42
@@ -492,18 +492,18 @@ if __FILE__ == $0
 		init.version
 
 		i = 0
-		for player in players
-			player.launch
+		for player_sign_small in players
+			player_sign_small.launch
 			i = i + 1
-			player.write_to_player("$$$ exec p#{i} : [#{player.file_name}]\n")
+			player_sign_small.write_to_player("$$$ exec p#{i} : [#{player_sign_small.file_name}]\n")
 
 			if (init.verbose > 0)
-				puts "$$$ exec p#{i} : [#{player.file_name}]\n"
+				puts "$$$ exec p#{i} : [#{player_sign_small.file_name}]\n"
 			end
 		end
 
 		if init.interactif && players[0].nil?
-			players << Player.new(init.player, 'O')
+			players << Player.new(init.player_sign_small, 'O')
 			players[0].mode_interactive
 		end
 
@@ -513,56 +513,56 @@ if __FILE__ == $0
 		end
 
 		while all_lose(players, trace)
-			for player in players
-				if (player.live > 0)
+			for player_sign_small in players
+				if (player_sign_small.live > 0)
 					map.gene_piece()
                                   begin
 					if init.interactif == 0
-						map.show_mapcontent(player.stdin)
+						map.show_mapcontent(player_sign_small.stdin)
 					end
-					map.show_piececontent(player.stdin)
+					map.show_piececontent(player_sign_small.stdin)
 
 					if (init.verbose > 0 && init.interactif == 0)
 						map.show_piececontent($stdout)
 					end
                                   rescue
-                                    player.end_player(trace)
+                                    player_sign_small.end_player(trace)
                                   end
 					begin
 						player_time = Timeout::timeout(init.time) do
-							@line = player.read_from_player()
+							@line = player_sign_small.read_from_player()
 						end
 					rescue Timeout::Error
-						puts "Player with #{player.piece_char}: timedout"
-						trace.trace_msg "#{player.piece_char}: timedout\n"
-						player.end_player trace
+						puts "Player with #{player_sign_small.piece_char}: timedout"
+						trace.trace_msg "#{player_sign_small.piece_char}: timedout\n"
+						player_sign_small.end_player trace
 					end
-					if (player.live > 0 && (nb = @line.gsub(/\s+/m, ' ').strip.split(" ")).length != 2)
-						puts "Player with #{player.piece_char}: error on input"
-						trace.trace_msg "#{player.piece_char}: error on input\n"
-						player.end_player trace
-					end
-
-					if (player.live > 0 && init.verbose > 0)
-						puts "<got (#{player.piece_char}): [#{nb[0]}, #{nb[1]}]"
+					if (player_sign_small.live > 0 && (nb = @line.gsub(/\s+/m, ' ').strip.split(" ")).length != 2)
+						puts "Player with #{player_sign_small.piece_char}: error on input"
+						trace.trace_msg "#{player_sign_small.piece_char}: error on input\n"
+						player_sign_small.end_player trace
 					end
 
-					if (player.live > 0 && map.check_placement(nb[0].to_i, nb[1].to_i, player.piece_char) == 1)
-						map.change_data(nb[0].to_i, nb[1].to_i, player.piece_char)
-						player.score += 1
+					if (player_sign_small.live > 0 && init.verbose > 0)
+						puts "<got (#{player_sign_small.piece_char}): [#{nb[0]}, #{nb[1]}]"
+					end
+
+					if (player_sign_small.live > 0 && map.check_placement(nb[0].to_i, nb[1].to_i, player_sign_small.piece_char) == 1)
+						map.change_data(nb[0].to_i, nb[1].to_i, player_sign_small.piece_char)
+						player_sign_small.score += 1
 					else
-						player.end_player trace
+						player_sign_small.end_player trace
 					end
 
-					if (init.verbose > 0 && player.live > 0)
-						map.show_mapcontent($stdout, player.piece_char.downcase, nb[0].to_i, nb[1].to_i)
+					if (init.verbose > 0 && player_sign_small.live > 0)
+						map.show_mapcontent($stdout, player_sign_small.piece_char.downcase, nb[0].to_i, nb[1].to_i)
 					end
 				end
 			end
 		end
 
-		for player in players
-		player.score_show()
+		for player_sign_small in players
+		player_sign_small.score_show()
 		end
 
 		trace.the_end players

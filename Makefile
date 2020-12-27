@@ -23,7 +23,7 @@ IFLAGS :=		-I $(INC_PATH) -I $(LIB_PATH)
 LFLAGS :=		-lft -L $(LIB_PATH)
 
 HFILES :=		fl_filler
-FILES :=		fl_main fl_solver fl_parser fl_utils fl_errors
+FILES :=		fl_main fl_init fl_solver fl_parser fl_utils fl_errors
 LIB :=			$(LIB_PATH)libft.a
 
 HDRS :=			$(addprefix $(INC_PATH), $(addsuffix .h, $(HFILES)))
@@ -50,10 +50,10 @@ $(OBJ_PATH)%.o: %.c $(HDRS)
 
 clean: mclean
 	@ make clean -C $(LIB_PATH)
-	@ echo "$(RED)Filler objs deleted$(RESET)"
+	@ echo "$(RED)filler objs deleted$(RESET)"
 fclean: mfclean
 	@ make fclean -C $(LIB_PATH)
-	@echo "$(RED)Filler deleted$(RESET)"
+	@echo "$(RED)filler deleted$(RESET)"
 re: fclean all
 
 mclean:
@@ -62,13 +62,14 @@ mclean:
 mfclean:
 	@ rm -f $(NAME)
 	@ rm -rf $(OBJ_PATH)
-	@ echo "$(RED)Filler objs deleted$(RESET)"
+	@ echo "$(RED)filler objs deleted$(RESET)"
 
 mre: mfclean all
+
 norm:
-	norminette src/*.c
 	norminette libft/*.c
 	norminette libft/*.h
+	norminette src/*.c
 	norminette includes/*.h
 
 .PHONY: $(LIB) all clean fclean re mclean mfclean mre norm

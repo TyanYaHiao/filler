@@ -76,6 +76,8 @@ set(SOURCES src/ft_abs.c
 		src/ft_power.c
 		src/ft_round_double.c
 		src/ft_abs_double.c
-		src/ft_strsplitwhitespaces.c)
+		src/ft_strsplitwhitespaces.c
+		src/ft_clear_2d_array.c
+		src/ft_nbrlen.c)
 
 add_library(libft STATIC ${SOURCES} )

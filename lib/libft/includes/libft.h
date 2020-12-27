@@ -93,8 +93,6 @@ t_list				*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem));
 
 int					ft_itoalen(int n);
 int					ft_count_words(char const *s, char c);
-int					ft_max(int *array, int lenght);
-int					ft_min(int *array, int lenght);
 int					ft_abs(int number);
 size_t				ft_strchrn(const char *s, int c);
 char				*ft_strcut(char **s, char c);
@@ -105,10 +103,10 @@ int					ft_sqrt_up(int num);
 int					ft_atoi_hex(char *str);
 double				ft_round_double(double x);
 double				ft_abs_double(double number);
-void				ft_switch_bool(int *value);
 char				*ft_dtoa(double n, size_t precision);
 double				ft_diff_double(double x0, double x1);
-
+void				ft_clear_2d_array(char **array);
+int					ft_nbrlen(int i);
 char				**ft_strsplitwhitespaces(char const *s);
 
 #endif
