@@ -7,3 +7,4 @@ cmake-build-debug/
 lib/libft/.obj/
 lib/libft/libft.a
 filler.trace
+fsmith.filler
