@@ -14,7 +14,7 @@ NAME :=			fsmith.filler
 
 SRC_PATH :=		src/
 INC_PATH :=		includes/
-LIB_PATH :=		libft/
+LIB_PATH :=		lib/libft/
 OBJ_PATH :=		.obj/
 
 CC :=			clang
@@ -22,37 +22,48 @@ CFLAGS :=		-g -Wall -Wextra -Werror
 IFLAGS :=		-I $(INC_PATH) -I $(LIB_PATH)
 LFLAGS :=		-lft -L $(LIB_PATH)
 
-HFILES :=		filler
-FILES :=		main
+HFILES :=		fl_filler
+FILES :=		fl_main fl_solver fl_parser fl_utils fl_errors
 LIB :=			$(LIB_PATH)libft.a
 
 HDRS :=			$(addprefix $(INC_PATH), $(addsuffix .h, $(HFILES)))
 SRCS :=			$(addprefix $(SRC_PATH), $(addsuffix .c, $(FILES)))
 OBJS :=			$(addprefix $(OBJ_PATH), $(SRCS:%.c=%.o))
 
+GREEN = \033[0;32m
+RED = \033[0;31m
+RESET = \033[0m
+
 all: $(NAME)
 
 $(NAME): $(LIB) $(OBJ_PATH) $(OBJS)
 	@ $(CC) $(CFLAGS) $(IFLAGS) $(LFLAGS) $(OBJS) -o $(NAME)
+	@echo "\n$(GREEN)fsmith.filler created$(RESET)"
 $(LIB):
 	@ $(MAKE) -C $(dir $@) $(notdir $@)
 
 $(OBJ_PATH):
-	mkdir -p $(OBJ_PATH)$(SRC_PATH)
+	@ mkdir -p $(OBJ_PATH)$(SRC_PATH)
 $(OBJ_PATH)%.o: %.c $(HDRS)
-	$(CC) $(CFLAGS) $(IFLAGS) -c $< -o $@
+	@ $(CC) $(CFLAGS) $(IFLAGS) -c $< -o $@
+	@echo -n '.'
 
 clean: mclean
-	make clean -C $(LIB_PATH)
+	@ make clean -C $(LIB_PATH)
+	@ echo "$(RED)Filler objs deleted$(RESET)"
 fclean: mfclean
-	make fclean -C $(LIB_PATH)
+	@ make fclean -C $(LIB_PATH)
+	@echo "$(RED)Filler deleted$(RESET)"
 re: fclean all
 
 mclean:
-	rm -f $(OBJS) $(DEPS)
+	@ rm -f $(OBJS) $(DEPS)
+
 mfclean:
-	rm -f $(NAME)
-	rm -rf $(OBJ_PATH)
+	@ rm -f $(NAME)
+	@ rm -rf $(OBJ_PATH)
+	@ echo "$(RED)Filler objs deleted$(RESET)"
+
 mre: mfclean all
 norm:
 	norminette src/*.c
@@ -63,4 +74,4 @@ norm:
 .PHONY: $(LIB) all clean fclean re mclean mfclean mre norm
 
 try:
-	./filler_vm -p1 cmake-build-debug/fsmith.filler -p2 players/abanlin.filler -v -f maps/map00
+	./resources/filler_vm -p1 ./fsmith.filler -p2 resources/players/superjeannot.filler -f resources/maps/map00

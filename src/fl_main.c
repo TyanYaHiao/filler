@@ -10,160 +10,47 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "filler.h"
+#include "fl_filler.h"
 
-int main()
+void	init_player(t_filler *filler, char **line)
 {
-	t_filler filler;
+	get_next_line(0, line);
 
-	fl_player_parser(&filler);
-//	fl_game_loop(&filler);
-	fl_find_size(&filler);
-	fl_parse_map(&filler);
-	fl_parse_piece_size(&filler);
-	fl_parse_piece(&filler);
-	return 0;
+	if (ft_strstr(*line, "p2"))
+	{
+		filler->player = 'x';
+		filler->enemy = 'o';
+	}
+	else
+	{
+		filler->player = 'o';
+		filler->enemy = 'x';
+	}
+	free(*line);
 }
 
-void fl_game_loop(t_filler *filler)
+int		main(void)
 {
-	while (1)
+	t_filler	*filler;
+	char		*line;
+
+	if ((filler = (t_filler *)ft_memalloc(sizeof(t_filler))) == NULL)
+		util_malloc_error("main struct");
+	init_player(filler, &line);
+	while (get_next_line(0, &line))
 	{
-		if (!fl_find_size(filler))
-			break ;
+		free(line);
+		make_map(filler, line);
+		make_piece(filler);
+		trim_piece(filler);
+		filler->best_solve_distance = 0;
+		solve_filler(filler);
+		ft_delmap(filler->map);
+		ft_delmap(filler->piece);
+		ft_delmap(filler->piece_trimmed);
+		ft_putnbr(filler->best_x - filler->start_x);
+		ft_putchar(' ');
+		ft_putnbr(filler->best_y - filler->start_y);
+		ft_putchar('\n');
 	}
-}
-
-void fl_zero_map(t_filler *filler)
-{
-	int i;
-
-	i = 0;
-	while (i < filler->x_size * filler->y_size)
-	{
-		filler->map[i] = EMPTY;
-		i++;
-	}
-}
-
-void fl_parse_piece(t_filler *filler)
-{
-	// остановился здесь. нужно думать как считать фигуру, как ее записать и как примерять установку на поле.
-	char	*str;
-	char	**splitted_line;
-	int 	i;
-	int		counter;
-
-	counter = 0;
-	fl_zero_map(filler);
-	while(get_next_line(0, &str) && counter < filler->piece_x_size * filler->piece_y_size)
-	{
-		splitted_line = ft_strsplitwhitespaces(str);
-		if (splitted_line[0] && !splitted_line[1] && ft_strlen(splitted_line[0]) == filler->piece_x_size)
-		{
-			i = 0;
-			while(splitted_line[0][i])
-			{
-				if (splitted_line[1][i] == filler->dot_small || splitted_line[1][i] == filler->dot_big)
-					filler->map[ft_atoi(splitted_line[0]) * filler->x_size + i] = PLAYER;
-				else if (splitted_line[1][i] == filler->enemy_dot_small || splitted_line[1][i] == filler->enemy_dot_big)
-					filler->map[ft_atoi(splitted_line[0]) * filler->x_size + i] = ENEMY;
-				i++;
-				counter++;
-			}
-		}
-		util_release_char_matrix(splitted_line);
-	}
-//	int j = 0;
-//	while (j < filler->x_size * filler->y_size)
-//	{
-//		ft_putstr_fd(ft_itoa(filler->map[j]), 2);
-//		j++;
-//	}
-}
-
-int fl_parse_piece_size(t_filler *filler)
-{
-	char *str;
-	char **splitted_line;
-	int counter;
-
-	counter = 0;
-	fl_zero_map(filler);
-	while (get_next_line(0, &str) && counter < filler->x_size * filler->y_size)
-	{
-		if (!ft_strncmp(str, "Piece ", 6))
-		{
-			splitted_line = ft_strsplitwhitespaces(str);
-			filler->piece_y_size = ft_atoi(splitted_line[1]);
-			filler->piece_x_size = ft_atoi(splitted_line[2]);
-			util_release_char_matrix(splitted_line);
-			return (0);
-		}
-	}
-	return (1);
-}
-
-void fl_parse_map(t_filler *filler)
-{
-	char	*str;
-	char	**splitted_line;
-	int 	i;
-	int		counter;
-
-	counter = 0;
-	fl_zero_map(filler);
-	while(get_next_line(0, &str) && counter < filler->x_size * filler->y_size)
-	{
-		splitted_line = ft_strsplitwhitespaces(str);
-		if (splitted_line[0] && splitted_line[1] && !splitted_line[2] && ft_strlen(splitted_line[0]) == 3 && ft_strlen(splitted_line[1]) == filler->x_size)
-		{
-			i = 0;
-			while(splitted_line[1][i])
-			{
-				if (splitted_line[1][i] == filler->dot_small || splitted_line[1][i] == filler->dot_big)
-					filler->map[ft_atoi(splitted_line[0]) * filler->x_size + i] = PLAYER;
-				else if (splitted_line[1][i] == filler->enemy_dot_small || splitted_line[1][i] == filler->enemy_dot_big)
-					filler->map[ft_atoi(splitted_line[0]) * filler->x_size + i] = ENEMY;
-				i++;
-				counter++;
-			}
-		}
-		util_release_char_matrix(splitted_line);
-	}
-//	int j = 0;
-//	while (j < filler->x_size * filler->y_size)
-//	{
-//		ft_putstr_fd(ft_itoa(filler->map[j]), 2);
-//		j++;
-//	}
-}
-
-int fl_find_size(t_filler *filler)
-{
-	char	*str;
-	char	**splitted_line;
-
-	while(get_next_line(0, &str))
-	{
-		if (!ft_strncmp(str, "Plateau ", 8))
-		{
-			splitted_line = ft_strsplitwhitespaces(str);
-			filler->y_size = ft_atoi(splitted_line[1]);
-			filler->x_size = ft_atoi(splitted_line[2]);
-			if ((filler->map = (int *)ft_memalloc(
-					sizeof(int) * filler->x_size * filler->y_size)) == NULL)
-				fl_util_malloc_error("filler->map");
-//			ft_putstr_fd("--Map size: ", 2);
-//			ft_putstr_fd("x: ", 2);
-//			ft_putstr_fd(ft_itoa(filler->x_size), 2);
-//			ft_putstr_fd(" y: ", 2);
-//			ft_putstr_fd(ft_itoa(filler->y_size), 2);
-//			ft_putstr_fd("--\n", 2);
-			util_release_char_matrix(splitted_line);
-			return 0;
-		}
-//		ft_putendl_fd("!", 2);
-	}
-	return 1;
 }

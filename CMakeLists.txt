@@ -9,9 +9,9 @@ include_directories(includes)
 include_directories(lib/libft/includes)
 add_subdirectory(lib/libft)
 
-set(FILLER_INC includes/filler.h)
+set(FILLER_INC includes/fl_filler.h)
 
-set(FILLER_SRC src/fl_main.c src/fl_parser.c src/fl_errors.c src/fl_utils.c)
+set(FILLER_SRC src/fl_main.c src/fl_errors.c src/fl_parser.c src/fl_utils.c src/fl_solver.c)
 
 add_executable(${NAME} ${FILLER_INC} ${FILLER_SRC})
 

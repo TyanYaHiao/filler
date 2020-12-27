@@ -10,18 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include	"filler.h"
+#include "fl_filler.h"
 
-void 	fl_player_errors_handler(t_filler *filler)
-{
-	if (ft_strcmp(&filler->player, "1") && ft_strcmp(&filler->player, "2"))
-	{
-		ft_putendl_fd("Parser error: wrong player!", 2);
-		exit(PLAYER_ERROR);
-	}
-}
-
-void	fl_util_malloc_error(char *str)
+void	util_malloc_error(char *str)
 {
 	ft_putendl("Malloc error: ");
 	ft_putstr(str);
