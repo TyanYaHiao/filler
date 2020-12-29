@@ -85,4 +85,6 @@ void	trim_token(t_filler *fl)
 	fl->token_trim_size_x = (fl->token_end_x - fl->token_start_x) + 1;
 	fl->token_trim_size_y = (fl->token_end_y - fl->token_start_y) + 1;
 	init_trim_token(fl);
+	fl->best_x = 1;
+	fl->best_y = 1;
 }

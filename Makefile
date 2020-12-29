@@ -67,8 +67,8 @@ mfclean:
 mre: mfclean all
 
 norm:
-	norminette libft/*.c
-	norminette libft/*.h
+	norminette lib/libft/src/*.c
+	norminette lib/libft/includes/*.h
 	norminette src/*.c
 	norminette includes/*.h
 

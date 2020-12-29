@@ -99,8 +99,6 @@ void		solve_filler(t_filler *fl)
 	int		y;
 
 	x = 0;
-	fl->best_x = 1;
-	fl->best_y = 1;
 	fl->best_solve_distance = 0;
 	while (x < fl->map_size_x)
 	{

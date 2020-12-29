@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include    "fl_filler.h"
+#include "fl_filler.h"
 
 void	free_maps(t_filler *fl)
 {

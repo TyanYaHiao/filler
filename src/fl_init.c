@@ -12,7 +12,7 @@
 
 #include "fl_filler.h"
 
-void init_player(t_filler *fl)
+void	init_player(t_filler *fl)
 {
 	char		*line;
 
@@ -60,7 +60,8 @@ void	init_token(t_filler *fl)
 	x = 0;
 	while (x < fl->token_size_x)
 	{
-		if ((fl->token[x] = malloc(sizeof(char) * fl->token_size_y + 1)) == NULL)
+		if ((fl->token[x] = malloc(sizeof(char)
+				* fl->token_size_y + 1)) == NULL)
 			util_malloc_error("token");
 		fl->token[x][fl->token_size_y] = '\0';
 		ft_memset(fl->token[x], '.', fl->token_size_y);
@@ -79,7 +80,8 @@ void	init_trim_token(t_filler *fl)
 	while (x < fl->token_trim_size_x)
 	{
 		y = 0;
-		if ((fl->token_trimmed[x] = malloc(sizeof(char) * fl->token_trim_size_y + 1)) == NULL)
+		if ((fl->token_trimmed[x] = malloc(sizeof(char)
+				* fl->token_trim_size_y + 1)) == NULL)
 			util_malloc_error("trim token");
 		fl->token_trimmed[x][fl->token_trim_size_y] = '\0';
 		while (y < fl->token_trim_size_y)
